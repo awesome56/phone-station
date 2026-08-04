@@ -230,6 +230,7 @@ class DatabaseSeeder extends Seeder
                 'price' => $data['price'],
                 'compare_at_price' => $data['compare_at_price'],
                 'specs' => $data['specs'],
+                'image' => $data['image'] ?? null,
                 'badge' => $data['badge'],
                 'featured' => $data['featured'],
                 'in_stock' => $data['stock'] > 0,
