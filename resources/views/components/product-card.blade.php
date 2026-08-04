@@ -79,7 +79,7 @@
             </a>
         </h3>
 
-        <p class="mt-2 flex items-baseline gap-2">
+        <p class="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span class="font-semibold text-lg">{{ naira($product->price) }}</span>
             @if ($product->compare_at_price)
                 <span class="text-sm text-ash line-through">{{ naira($product->compare_at_price) }}</span>
