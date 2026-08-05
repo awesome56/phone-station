@@ -132,7 +132,47 @@
                         </a>
                     </li>
                 @endforeach
+                <li>
+                    <a href="{{ route('products.index') }}" class="block py-3 font-semibold text-sm text-brand border-b border-line">
+                        Our Deals
+                    </a>
+                </li>
             </ul>
+
+            <div class="px-6 pb-6">
+                @auth
+                    <div class="flex items-center justify-between gap-4 py-4">
+                        <div class="min-w-0">
+                            <p class="font-semibold text-sm truncate">{{ $user->name }}</p>
+                            <p class="text-xs text-ash">{{ $user->email }}</p>
+                        </div>
+                        @if ($user->hasPermission('dashboard.view'))
+                            <a href="{{ route('admin.dashboard') }}"
+                               class="shrink-0 text-xs font-semibold text-brand border border-brand px-4 py-2 rounded-lg">
+                                Admin
+                            </a>
+                        @endif
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="w-full text-xs font-semibold text-red-600 border border-red-200 px-4 py-2.5 rounded-lg">
+                            Log Out
+                        </button>
+                    </form>
+                @else
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('login') }}"
+                           class="flex-1 text-center text-xs font-semibold text-ink border border-ink px-4 py-2.5 rounded-lg">
+                            Sign In
+                        </a>
+                        <a href="{{ route('register') }}"
+                           class="flex-1 text-center text-xs font-semibold bg-brand text-white px-4 py-2.5 rounded-lg">
+                            Register
+                        </a>
+                    </div>
+                @endauth
+            </div>
         </div>
     </nav>
 </header>
