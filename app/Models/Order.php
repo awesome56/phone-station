@@ -25,7 +25,19 @@ class Order extends Model
         'shipping',
         'total',
         'status',
+        'payment_method',
+        'payment_reference',
+        'paid_at',
     ];
+
+    protected $casts = [
+        'paid_at' => 'datetime',
+    ];
+
+    public function isPaid(): bool
+    {
+        return $this->paid_at !== null;
+    }
 
     public function items(): HasMany
     {

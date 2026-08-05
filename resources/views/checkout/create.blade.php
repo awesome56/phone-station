@@ -117,8 +117,37 @@
                     </label>
                 </div>
 
+                {{-- PAYMENT METHOD --}}
+                <h2 class="mt-14 text-lg font-semibold pb-4 border-b border-line">Payment Method</h2>
+
+                <div class="mt-6 space-y-4">
+                    @if ($paystackAvailable)
+                        <label class="flex items-start gap-3 border border-brand bg-mist p-5 cursor-pointer">
+                            <input type="radio" name="payment_method" value="paystack" checked class="mt-1 accent-brand">
+                            <span class="flex-1">
+                                <span class="flex items-center gap-2 text-[13px] font-semibold">
+                                    Pay Online with Paystack
+                                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand/10 text-brand">CARD · TRANSFER · USSD</span>
+                                </span>
+                                <span class="mt-1 block text-sm font-normal text-muted">Secure payment via Paystack. Your order ships as soon as payment is confirmed.</span>
+                            </span>
+                            <span class="font-semibold text-sm shrink-0">{{ naira($subtotal + $shipping, true) }}</span>
+                        </label>
+                    @endif
+
+                    <label class="flex items-start gap-3 border border-line p-5 cursor-pointer hover:border-brand transition-colors duration-200 {{ $paystackAvailable ? '' : 'border-brand bg-mist' }}">
+                        <input type="radio" name="payment_method" value="cod" {{ $paystackAvailable ? '' : 'checked' }} class="mt-1 accent-brand">
+                        <span class="flex-1">
+                            <span class="block text-[13px] font-semibold">Cash on Delivery</span>
+                            <span class="mt-1 block text-sm font-normal text-muted">Pay when your order arrives. Shop staff will confirm your delivery date by phone.</span>
+                        </span>
+                        <span class="font-semibold text-sm shrink-0">{{ naira(0, true) }}</span>
+                    </label>
+                </div>
+
                 <p class="mt-8 text-[13px] font-normal text-muted leading-relaxed">
-                    Payment: cash on delivery or bank transfer confirmation. No cards stored. No subscriptions.
+                    No card details are stored on our servers. Payments are processed securely by
+                    <a href="https://paystack.com" target="_blank" rel="noopener" class="text-brand font-semibold hover:underline">Paystack</a>.
                 </p>
             </div>
 

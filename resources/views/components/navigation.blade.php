@@ -2,6 +2,7 @@
 
 @php
     $cartCount = array_sum(session('cart', []));
+    $user = auth()->user();
     $links = [
         ['label' => 'Shop All', 'href' => route('products.index')],
         ['label' => 'Flagships', 'href' => route('products.index', ['category' => 'flagships'])],
@@ -63,13 +64,31 @@
             </ul>
 
             <div class="flex items-center gap-7">
-                <a href="{{ route('products.index') }}" aria-label="Search"
-                   class="hidden sm:block text-ink hover:text-brand transition-colors duration-200">
-                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="11" cy="11" r="7"/>
-                        <line x1="16.5" y1="16.5" x2="21" y2="21"/>
-                    </svg>
-                </a>
+                @auth
+                    @if (auth()->user()->hasPermission('dashboard.view'))
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="hidden sm:inline-block text-xs font-semibold text-brand border border-brand px-4 py-2 rounded-lg hover:bg-brand hover:text-white transition-colors">
+                            Admin
+                        </a>
+                    @endif
+
+                    <a href="{{ route('products.index') }}" aria-label="Search"
+                       class="hidden sm:block text-ink hover:text-brand transition-colors duration-200">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="7"/>
+                            <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+                        </svg>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="hidden sm:inline-block text-xs font-semibold text-ink border border-ink px-4 py-2 rounded-lg hover:bg-ink hover:text-white transition-colors">
+                        Sign In
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="hidden sm:inline-block text-xs font-semibold bg-brand text-white px-4 py-2 rounded-lg hover:bg-brand-dark transition-colors">
+                        Register
+                    </a>
+                @endauth
 
                 <a href="{{ route('cart.index') }}" aria-label="Shopping cart" class="relative text-ink hover:text-brand transition-colors duration-200">
                     <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
@@ -81,6 +100,17 @@
                         {{ $cartCount }}
                     </span>
                 </a>
+
+                @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="hidden sm:block text-xs font-semibold text-ash border border-field px-4 py-2 rounded-lg hover:text-red-600 hover:border-red-300 transition-colors"
+                                title="Log out ({{ $user->name }})">
+                            Log Out
+                        </button>
+                    </form>
+                @endauth
 
                 <button id="menu-toggle"
                         aria-expanded="false"

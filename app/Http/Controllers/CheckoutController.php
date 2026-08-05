@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\Paystack;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function create()
+    public function create(Paystack $paystack)
     {
         $cart = session()->get('cart', []);
 
@@ -27,10 +29,11 @@ class CheckoutController extends Controller
             'shipping' => $subtotal >= 50000 ? 0 : 399,
             'cart' => $cart,
             'products' => $products,
+            'paystackAvailable' => $paystack->available(),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Paystack $paystack)
     {
         $cart = session()->get('cart', []);
 
@@ -44,7 +47,12 @@ class CheckoutController extends Controller
             'shipping_city' => ['required', 'string', 'max:255'],
             'shipping_postal_code' => ['nullable', 'string', 'max:16'],
             'shipping_country' => ['required', 'string', 'max:64'],
+            'payment_method' => ['required', 'in:paystack,cod'],
         ]);
+
+        if ($validated['payment_method'] === 'paystack' && ! $paystack->available()) {
+            return back()->withErrors(['payment_method' => 'Online payment is not available right now. Please choose cash on delivery.'])->withInput();
+        }
 
         $products = Product::query()->whereIn('id', array_keys($cart))->get()->keyBy('id');
 
@@ -57,30 +65,56 @@ class CheckoutController extends Controller
 
         $shipping = $subtotal >= 50000 ? 0 : 399;
 
-        $order = Order::create([
-            'order_number' => 'PS-'.Str::upper(Str::random(6)),
-            ...$validated,
-            'subtotal' => $subtotal,
-            'shipping' => $shipping,
-            'total' => $subtotal + $shipping,
-        ]);
+        try {
+            $paymentUrl = null;
 
-        foreach ($cart as $productId => $quantity) {
-            $product = $products->get($productId);
+            $order = DB::transaction(function () use (&$paymentUrl, $validated, $products, $cart, $subtotal, $shipping, $paystack) {
+                $order = Order::create([
+                    'order_number' => 'PS-'.Str::upper(Str::random(6)),
+                    ...$validated,
+                    'subtotal' => $subtotal,
+                    'shipping' => $shipping,
+                    'total' => $subtotal + $shipping,
+                    'payment_method' => $validated['payment_method'],
+                    'payment_reference' => $validated['payment_method'] === 'paystack' ? $paystack->reference() : null,
+                ]);
 
-            $order->items()->create([
-                'product_id' => $product->getKey(),
-                'product_name' => $product->name,
-                'product_slug' => $product->slug,
-                'unit_price' => $product->price,
-                'quantity' => $quantity,
-                'line_total' => $product->price * $quantity,
-            ]);
+                foreach ($cart as $productId => $quantity) {
+                    $product = $products->get($productId);
 
-            $product->decrement('stock', $quantity);
+                    $order->items()->create([
+                        'product_id' => $product->getKey(),
+                        'product_name' => $product->name,
+                        'product_slug' => $product->slug,
+                        'unit_price' => $product->price,
+                        'quantity' => $quantity,
+                        'line_total' => $product->price * $quantity,
+                    ]);
+
+                    $product->decrement('stock', $quantity);
+                }
+
+                if ($validated['payment_method'] === 'paystack') {
+                    $paymentUrl = $paystack->initialize($order, route('payments.callback'));
+
+                    if (! $paymentUrl) {
+                        throw new \RuntimeException('Paystack returned no payment URL.');
+                    }
+                }
+
+                return $order;
+            });
+        } catch (\Throwable $e) {
+            return back()
+                ->withErrors(['payment' => 'We could not start your payment. Please try again.'])
+                ->withInput();
         }
 
         session()->forget('cart');
+
+        if ($validated['payment_method'] === 'paystack') {
+            return redirect()->away($paymentUrl);
+        }
 
         return redirect()->route('checkout.confirmation', $order);
     }

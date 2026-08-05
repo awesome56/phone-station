@@ -100,6 +100,7 @@ class StoreTest extends TestCase
             'shipping_city' => 'London',
             'shipping_postal_code' => 'E1 1AA',
             'shipping_country' => 'UK',
+            'payment_method' => 'cod',
         ])->assertRedirect();
 
         $order = Order::query()->latest()->firstOrFail();

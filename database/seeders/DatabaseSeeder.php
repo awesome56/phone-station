@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            PermissionSeeder::class,
+        ]);
+
         $categories = Category::query()->insert([
             [
                 'name' => 'Flagships',
@@ -57,8 +61,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 119900,
                 'specs' => ['chip' => 'A17 Pro', 'display' => '6.1" ProMotion OLED', 'camera' => '48MP Triple', 'battery' => '3,274 mAh', 'storage' => '256GB'],
                 'badge' => 'BEST SELLER',
-                                'image' => 'products/iphone-15-pro.png',
-'featured' => true,
+                'image' => 'products/iphone-15-pro.png',
+                'featured' => true,
                 'stock' => 14,
             ],
             [
@@ -71,8 +75,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 134900,
                 'specs' => ['chip' => 'Snapdragon 8 Gen 3', 'display' => '6.8" QHD+ AMOLED', 'camera' => '200MP Quad', 'battery' => '5,000 mAh', 'storage' => '256GB'],
                 'badge' => 'NEW',
-                                'image' => 'products/galaxy-s24-ultra.jpg',
-'featured' => true,
+                'image' => 'products/galaxy-s24-ultra.jpg',
+                'featured' => true,
                 'stock' => 9,
             ],
             [
@@ -85,8 +89,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 99900,
                 'specs' => ['chip' => 'Tensor G3', 'display' => '6.7" LTPO OLED', 'camera' => '50MP Triple', 'battery' => '5,050 mAh', 'storage' => '128GB'],
                 'badge' => null,
-                                'image' => 'products/pixel-8-pro.jpg',
-'featured' => false,
+                'image' => 'products/pixel-8-pro.jpg',
+                'featured' => false,
                 'stock' => 21,
             ],
             [
@@ -99,8 +103,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => null,
                 'specs' => ['chip' => 'Snapdragon 8 Gen 3', 'display' => '6.82" LTPO OLED', 'camera' => '50MP Triple', 'battery' => '5,400 mAh', 'storage' => '256GB'],
                 'badge' => null,
-                                'image' => 'products/oneplus-12.jpg',
-'featured' => false,
+                'image' => 'products/oneplus-12.jpg',
+                'featured' => false,
                 'stock' => 17,
             ],
             [
@@ -113,8 +117,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 189900,
                 'specs' => ['chip' => 'Snapdragon 8 Gen 3', 'display' => '7.6" Foldable AMOLED', 'camera' => '50MP Triple', 'battery' => '4,400 mAh', 'storage' => '512GB'],
                 'badge' => 'NEW',
-                                'image' => 'products/galaxy-z-fold-6.png',
-'featured' => true,
+                'image' => 'products/galaxy-z-fold-6.png',
+                'featured' => true,
                 'stock' => 6,
             ],
             [
@@ -127,8 +131,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 109900,
                 'specs' => ['chip' => 'Snapdragon 8 Gen 3', 'display' => '6.7" Foldable AMOLED', 'camera' => '50MP Dual', 'battery' => '4,000 mAh', 'storage' => '256GB'],
                 'badge' => null,
-                                'image' => 'products/galaxy-z-flip-6.png',
-'featured' => false,
+                'image' => 'products/galaxy-z-flip-6.png',
+                'featured' => false,
                 'stock' => 12,
             ],
             [
@@ -141,8 +145,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => null,
                 'specs' => ['chip' => 'Snapdragon 8s Gen 3', 'display' => '6.9" Foldable OLED', 'camera' => '64MP Dual', 'battery' => '4,000 mAh', 'storage' => '256GB'],
                 'badge' => null,
-                                'image' => 'products/motorola-razr-50-ultra.jpg',
-'featured' => false,
+                'image' => 'products/motorola-razr-50-ultra.jpg',
+                'featured' => false,
                 'stock' => 8,
             ],
             [
@@ -155,8 +159,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 62900,
                 'specs' => ['chip' => 'Snapdragon 8+ Gen 1', 'display' => '6.7" OLED', 'camera' => '50MP Dual', 'battery' => '4,700 mAh', 'storage' => '256GB'],
                 'badge' => null,
-                                'image' => 'products/nothing-phone-(2).png',
-'featured' => false,
+                'image' => 'products/nothing-phone-(2).png',
+                'featured' => false,
                 'stock' => 25,
             ],
             [
@@ -169,8 +173,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 39900,
                 'specs' => ['chip' => 'Snapdragon 7s Gen 2', 'display' => '6.67" AMOLED', 'camera' => '200MP Triple', 'battery' => '5,100 mAh', 'storage' => '256GB'],
                 'badge' => 'BEST VALUE',
-                                'image' => 'products/redmi-note-13-pro.jpg',
-'featured' => false,
+                'image' => 'products/redmi-note-13-pro.jpg',
+                'featured' => false,
                 'stock' => 32,
             ],
             [
@@ -183,8 +187,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => null,
                 'specs' => ['chip' => 'A15 Bionic', 'display' => '4.7" Retina LCD', 'camera' => '12MP Single', 'battery' => '2,018 mAh', 'storage' => '128GB'],
                 'badge' => null,
-                                'image' => 'products/iphone-se-3rd-gen.png',
-'featured' => false,
+                'image' => 'products/iphone-se-3rd-gen.png',
+                'featured' => false,
                 'stock' => 19,
             ],
             [
@@ -197,8 +201,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => 109900,
                 'specs' => ['chip' => 'Snapdragon 8 Gen 3', 'display' => '6.78" 165Hz AMOLED', 'camera' => '50MP Triple', 'battery' => '5,500 mAh', 'storage' => '512GB'],
                 'badge' => 'GAMING',
-                                'image' => 'products/rog-phone-8-pro.jpg',
-'featured' => false,
+                'image' => 'products/rog-phone-8-pro.jpg',
+                'featured' => false,
                 'stock' => 7,
             ],
             [
@@ -211,8 +215,8 @@ class DatabaseSeeder extends Seeder
                 'compare_at_price' => null,
                 'specs' => ['chip' => 'Snapdragon 8 Gen 3', 'display' => '6.8" 120Hz AMOLED', 'camera' => '50MP Dual', 'battery' => '6,500 mAh', 'storage' => '256GB'],
                 'badge' => null,
-                                'image' => 'products/red-magic-9s-pro.png',
-'featured' => false,
+                'image' => 'products/red-magic-9s-pro.png',
+                'featured' => false,
                 'stock' => 11,
             ],
         ];
@@ -237,5 +241,9 @@ class DatabaseSeeder extends Seeder
                 'stock' => $data['stock'],
             ]);
         }
+
+        $this->call([
+            DemoOrderSeeder::class,
+        ]);
     }
 }
