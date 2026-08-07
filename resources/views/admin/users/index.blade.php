@@ -53,6 +53,7 @@
                         <th class="px-5 py-3.5 font-semibold">Orders</th>
                         <th class="px-5 py-3.5 font-semibold">Joined</th>
                         <th class="px-5 py-3.5 font-semibold text-right">Change Role</th>
+                        <th class="px-5 py-3.5 font-semibold text-right">Password</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-line">
@@ -89,10 +90,38 @@
                                     </button>
                                 </form>
                             </td>
+                            <td class="px-5 py-3.5 text-right">
+                                <button type="button" data-password-toggle="{{ $user->id }}"
+                                        class="text-xs font-semibold text-brand hover:underline">
+                                    Change Password
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="password-row-{{ $user->id }}" class="hidden bg-mist/40">
+                            <td colspan="6" class="px-5 py-4">
+                                <form method="POST" action="{{ route('admin.users.password', $user) }}"
+                                      class="flex flex-wrap items-end gap-3 max-w-2xl">
+                                    @csrf @method('PATCH')
+                                    <div class="flex-1 min-w-44">
+                                        <label class="block text-xs font-medium text-ash mb-1.5">New password (min 8 chars)</label>
+                                        <input type="password" name="password" required minlength="8" placeholder="New password"
+                                               class="input-box rounded-lg !py-2.5 text-sm">
+                                    </div>
+                                    <div class="flex-1 min-w-44">
+                                        <label class="block text-xs font-medium text-ash mb-1.5">Confirm password</label>
+                                        <input type="password" name="password_confirmation" required minlength="8" placeholder="Repeat password"
+                                               class="input-box rounded-lg !py-2.5 text-sm">
+                                    </div>
+                                    <button type="submit" class="bg-brand text-white text-xs font-semibold px-4 py-2.5 rounded-lg hover:bg-brand-dark transition-colors">
+                                        Set Password
+                                    </button>
+                                </form>
+                                @error("password.{$user->id}") <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-14 text-center text-ash">No users found.</td>
+                            <td colspan="6" class="px-5 py-14 text-center text-ash">No users found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -103,3 +132,13 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.getElementById('password-row-' + button.dataset.passwordToggle).classList.toggle('hidden');
+        });
+    });
+</script>
+@endpush

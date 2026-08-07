@@ -39,7 +39,7 @@
 
     {{-- SIDEBAR --}}
     <aside id="admin-sidebar"
-           class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-line flex flex-col transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200">
+           class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-line flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
         <div class="h-20 px-6 flex items-center gap-3 border-b border-line">
             <img src="{{ asset('images/logo.jpeg') }}" alt="Phone Station" class="h-9 w-9 rounded-full object-cover">
             <div class="leading-tight">
@@ -81,7 +81,7 @@
     </aside>
 
     {{-- MAIN --}}
-    <div class="flex-1 flex flex-col min-w-0">
+    <div class="flex-1 flex flex-col min-w-0 lg:pl-64">
 
         {{-- TOPBAR --}}
         <header class="sticky top-0 z-40 h-16 bg-white border-b border-line flex items-center justify-between gap-4 px-4 lg:px-8">

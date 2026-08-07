@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -41,5 +42,16 @@ class UserController extends Controller
         $user->update(['role' => $request->role]);
 
         return back()->with('status', "{$user->name} is now a {$request->role}.");
+    }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $user->update(['password' => $validated['password']]);
+
+        return back()->with('status', "Password updated for {$user->name}.");
     }
 }

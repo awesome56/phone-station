@@ -85,6 +85,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin:users.manage'])->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::patch('/users/{user}', [UserController::class, 'updateRole'])->name('users.role');
+        Route::patch('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
     });
 
     Route::middleware(['auth', 'admin:permissions.manage'])->group(function () {

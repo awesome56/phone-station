@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class ComingSoonTest extends TestCase
@@ -46,7 +47,7 @@ class ComingSoonTest extends TestCase
         $this->seed();
         config()->set('app.coming_soon', true);
 
-        $admin = User::query()->where('email', 'admin@example.com')->firstOrFail();
+        $admin = User::query()->where('email', 'phonestation31@gmail.com')->firstOrFail();
 
         $this->actingAs($admin)
             ->get('/')
@@ -83,7 +84,7 @@ class ComingSoonTest extends TestCase
     {
         $this->seed();
 
-        $admin = User::query()->where('email', 'admin@example.com')->firstOrFail();
+        $admin = User::query()->where('email', 'phonestation31@gmail.com')->firstOrFail();
 
         $this->actingAs($admin)
             ->post(route('admin.settings.coming-soon'), ['enabled' => 1])
@@ -115,5 +116,34 @@ class ComingSoonTest extends TestCase
         Setting::set('coming_soon', '1');
 
         $this->get('/')->assertRedirect(route('coming-soon'));
+    }
+
+    public function test_super_admin_uses_phonestation_email(): void
+    {
+        $this->seed();
+
+        $admin = User::query()->where('email', 'phonestation31@gmail.com')->firstOrFail();
+
+        $this->assertTrue($admin->isAdmin());
+        $this->assertNull(User::query()->where('email', 'admin@example.com')->first());
+        $this->assertTrue(Auth::attempt(['email' => 'phonestation31@gmail.com', 'password' => 'password']));
+    }
+
+    public function test_admin_can_change_a_users_password(): void
+    {
+        $this->seed();
+
+        $admin = User::query()->where('email', 'phonestation31@gmail.com')->firstOrFail();
+        $customer = User::query()->firstWhere('role', 'customer');
+
+        $this->actingAs($admin)
+            ->patch(route('admin.users.password', $customer), [
+                'password' => 'new-secret-123',
+                'password_confirmation' => 'new-secret-123',
+            ])
+            ->assertRedirect();
+
+        $this->assertTrue(Auth::attempt(['email' => $customer->email, 'password' => 'new-secret-123']));
+        $this->assertFalse(Auth::attempt(['email' => $customer->email, 'password' => 'password']));
     }
 }

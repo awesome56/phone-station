@@ -16,19 +16,17 @@ class DemoOrderSeeder extends Seeder
      */
     public function run(): void
     {
-        if (User::query()->where('email', 'admin@example.com')->exists()) {
-            User::query()->where('email', 'admin@example.com')->update([
-                'name' => 'Store Admin',
-                'role' => 'admin',
-                'password' => bcrypt('password'),
-            ]);
-        } else {
-            User::query()->create([
-                'name' => 'Store Admin',
-                'email' => 'admin@example.com',
-                'password' => 'password',
-                'role' => 'admin',
-            ]);
+        $adminEmail = 'phonestation31@gmail.com';
+
+        $admin = User::query()->updateOrCreate(
+            ['email' => $adminEmail],
+            ['name' => 'Store Admin', 'role' => 'admin', 'password' => 'password']
+        );
+
+        $legacyAdmin = User::query()->where('email', 'admin@example.com')->whereKeyNot($admin->getKey())->first();
+
+        if ($legacyAdmin) {
+            $legacyAdmin->delete();
         }
 
         if (Order::query()->exists()) {
