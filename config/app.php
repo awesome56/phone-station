@@ -30,6 +30,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Coming Soon Mode
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the storefront shows the coming-soon page to guests.
+    | Users with the dashboard.view permission (admins/staff) pass through.
+    |
+    */
+
+    'coming_soon' => env('COMING_SOON', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |
