@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,9 @@ class ComingSoon
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! config('app.coming_soon')) {
+        $enabled = (bool) Setting::get('coming_soon', config('app.coming_soon'));
+
+        if (! $enabled) {
             return $next($request);
         }
 

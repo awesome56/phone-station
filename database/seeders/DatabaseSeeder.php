@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PermissionSeeder::class,
+            SettingSeeder::class,
         ]);
 
         $categories = Category::query()->insert([

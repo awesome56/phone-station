@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -53,6 +54,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin:dashboard.view'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/settings/coming-soon', [SettingController::class, 'toggleComingSoon'])->name('settings.coming-soon');
     });
 
     Route::middleware(['auth', 'admin:products.manage'])->group(function () {

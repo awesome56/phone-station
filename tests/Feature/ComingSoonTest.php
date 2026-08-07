@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -56,8 +57,8 @@ class ComingSoonTest extends TestCase
 
     public function test_customers_are_blocked_by_coming_soon(): void
     {
-        $this->seed();
         config()->set('app.coming_soon', true);
+        $this->seed();
 
         $customer = User::query()->firstWhere('role', 'customer');
 
@@ -76,5 +77,43 @@ class ComingSoonTest extends TestCase
             ->assertRedirect(route('coming-soon'));
 
         $this->assertDatabaseHas('subscribers', ['email' => 'early@example.com']);
+    }
+
+    public function test_admin_can_toggle_coming_soon_from_dashboard(): void
+    {
+        $this->seed();
+
+        $admin = User::query()->where('email', 'admin@example.com')->firstOrFail();
+
+        $this->actingAs($admin)
+            ->post(route('admin.settings.coming-soon'), ['enabled' => 1])
+            ->assertRedirect();
+
+        $this->assertSame('1', Setting::get('coming_soon'));
+
+        auth()->forgetGuards();
+
+        $this->get('/')->assertRedirect(route('coming-soon'));
+
+        $this->actingAs($admin)->get('/')->assertStatus(200)->assertDontSee('Coming soon', false);
+
+        $this->actingAs($admin)
+            ->post(route('admin.settings.coming-soon'), ['enabled' => 0])
+            ->assertRedirect();
+
+        $this->assertSame('0', Setting::get('coming_soon'));
+
+        auth()->forgetGuards();
+
+        $this->get('/')->assertStatus(200);
+    }
+
+    public function test_coming_soon_middleware_prefers_database_setting(): void
+    {
+        $this->seed();
+
+        Setting::set('coming_soon', '1');
+
+        $this->get('/')->assertRedirect(route('coming-soon'));
     }
 }

@@ -28,18 +28,6 @@
                 <img src="{{ asset('images/logo.jpeg') }}" alt="Phone Station" class="h-11 w-11 rounded-full object-cover ring-2 ring-white/30">
                 <span class="font-semibold text-lg tracking-tight">Phone Station</span>
             </a>
-
-            @if (auth()->check())
-                <a href="{{ route('admin.dashboard') }}"
-                   class="text-xs font-semibold bg-white/15 backdrop-blur border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-[#35141c] transition-colors">
-                    Enter Admin
-                </a>
-            @else
-                <a href="{{ route('login') }}"
-                   class="text-xs font-semibold bg-white/15 backdrop-blur border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-[#35141c] transition-colors">
-                    Admin Sign In
-                </a>
-            @endif
         </header>
 
         {{-- CONTENT --}}

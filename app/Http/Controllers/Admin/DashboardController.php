@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 
@@ -78,6 +79,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard.index', [
+            'comingSoon' => (bool) Setting::get('coming_soon', config('app.coming_soon')),
             'stats' => [
                 ['label' => 'Revenue', 'value' => naira($revenueThisMonth), 'delta' => percent_delta($revenueThisMonth, $revenuePrevMonth), 'hint' => 'vs last month'],
                 ['label' => 'Orders', 'value' => number_format($ordersThisMonth), 'delta' => percent_delta($ordersThisMonth, $ordersPrevMonth), 'hint' => 'vs last month'],

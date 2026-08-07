@@ -3,8 +3,38 @@
 @section('title', 'Dashboard')
 
 @section('content')
+    {{-- COMING SOON TOGGLE --}}
+    <div class="bg-white border border-line rounded-xl p-5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <span class="w-10 h-10 rounded-lg {{ $comingSoon ? 'bg-amber-50 text-amber-600' : 'bg-green-50 text-green-600' }} flex items-center justify-center shrink-0">
+                @if ($comingSoon)
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                @else
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                @endif
+            </span>
+            <div>
+                <p class="font-semibold text-sm">Coming Soon Mode</p>
+                <p class="text-xs text-ash mt-0.5">Guests see the coming-soon page. Admins and staff can always browse the store.</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full {{ $comingSoon ? 'bg-amber-50 text-amber-600' : 'bg-green-50 text-green-600' }}">
+                {{ $comingSoon ? 'ON — guests see coming soon' : 'OFF — store is live' }}
+            </span>
+            <form method="POST" action="{{ route('admin.settings.coming-soon') }}">
+                @csrf
+                <input type="hidden" name="enabled" value="{{ $comingSoon ? 0 : 1 }}">
+                <button type="submit"
+                        class="text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors {{ $comingSoon ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-amber-500 text-white hover:bg-amber-600' }}">
+                    {{ $comingSoon ? 'Turn Off' : 'Turn On' }}
+                </button>
+            </form>
+        </div>
+    </div>
+
     {{-- STAT CARDS --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         @foreach ($stats as $stat)
             <div class="bg-white border border-line rounded-xl p-5">
                 <p class="text-xs font-medium text-ash">{{ $stat['label'] }}</p>
