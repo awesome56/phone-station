@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\ProductImporter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductController extends Controller
 {
@@ -42,6 +44,41 @@ class ProductController extends Controller
             'product' => new Product,
             'categories' => Category::orderBy('name')->get(),
         ]);
+    }
+
+    public function bulkUpload()
+    {
+        return view('admin.products.bulk');
+    }
+
+    public function downloadTemplate(): StreamedResponse
+    {
+        return response()->streamDownload(function () {
+            echo app(ProductImporter::class)->template();
+        }, 'products-import-template.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    public function import(Request $request)
+    {
+        $validated = $request->validate([
+            'csv' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+            'zip' => ['nullable', 'file', 'mimes:zip', 'max:51200'],
+        ]);
+
+        $result = app(ProductImporter::class)->import(
+            $validated['csv']->getRealPath(),
+            isset($validated['zip']) ? $validated['zip']->getRealPath() : null
+        );
+
+        $message = "Imported {$result['imported']} product(s).";
+
+        if ($result['errors'] !== []) {
+            $message .= ' '.count($result['errors']).' row(s) skipped.';
+        }
+
+        return redirect()->route('admin.products.bulk')
+            ->with('status', $message)
+            ->with('import_errors', $result['errors']);
     }
 
     public function store(Request $request)

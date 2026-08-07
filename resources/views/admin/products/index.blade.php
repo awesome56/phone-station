@@ -8,11 +8,18 @@
             <h1 class="text-lg font-semibold">Products</h1>
             <p class="text-xs text-ash mt-0.5">{{ $products->total() }} products in store</p>
         </div>
-        <a href="{{ route('admin.products.create') }}"
-           class="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-brand-dark transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            Add Product
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.products.bulk') }}"
+               class="inline-flex items-center gap-2 border border-brand text-brand text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-brand hover:text-white transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                Bulk Upload
+            </a>
+            <a href="{{ route('admin.products.create') }}"
+               class="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-brand-dark transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Product
+            </a>
+        </div>
     </div>
 
     {{-- FILTERS --}}

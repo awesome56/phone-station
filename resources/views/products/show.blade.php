@@ -3,6 +3,8 @@
 @section('title', $product->name . ' — Phone Station')
 
 @section('content')
+    @php $gallery = $product->gallery(); @endphp
+
     {{-- BREADCRUMB --}}
     <section class="border-b border-line">
         <div class="max-w-[1440px] mx-auto px-4 lg:px-8 py-5 breadcrumb">
@@ -21,9 +23,20 @@
             {{-- GALLERY --}}
             <div class="col-span-12 lg:col-span-6">
                 <div class="relative border border-line bg-mist overflow-hidden">
-                    <div class="aspect-[3/4] max-h-[640px] mx-auto w-full p-10">
-                        <x-phone-art :product="$product" />
-                    </div>
+                    @if ($gallery->isNotEmpty())
+                        <div id="gallery-stage" class="aspect-[3/4] max-h-[640px] mx-auto w-full p-10">
+                            <img src="{{ Storage::url($product->image) }}" data-gallery-img alt="{{ $product->name }}"
+                                 class="w-full h-full object-contain">
+                            @foreach ($gallery as $image)
+                                <img src="{{ Storage::url($image->image) }}" data-gallery-img alt="{{ $product->name }}"
+                                     class="w-full h-full object-contain hidden">
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="aspect-[3/4] max-h-[640px] mx-auto w-full p-10">
+                            <x-phone-art :product="$product" />
+                        </div>
+                    @endif
                     @if ($product->badge)
                         <span class="absolute top-4 left-4 bg-sale text-ink text-[10px] font-semibold px-3 py-1.5">{{ $product->badge }}</span>
                     @endif
@@ -34,17 +47,26 @@
 
                 {{-- THUMBNAILS --}}
                 <div class="mt-4 flex items-center gap-3">
-                    <button type="button" class="qty-btn" aria-label="Previous image">
-                        <svg width="9" height="14" viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5L2 7L7.5 12.5"/></svg>
-                    </button>
-                    @foreach (collect([1, 2, 3]) as $thumb)
-                        <div class="{{ $thumb === 1 ? 'border-brand' : 'border-line' }} border bg-mist w-[72px] h-[72px] p-2 hover:border-brand transition-colors duration-200 cursor-pointer">
-                            <x-phone-art :product="$product" />
-                        </div>
-                    @endforeach
-                    <button type="button" class="qty-btn" aria-label="Next image">
-                        <svg width="9" height="14" viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 1.5L7 7L1.5 12.5"/></svg>
-                    </button>
+                    @if ($gallery->isNotEmpty())
+                        @foreach (collect([$product->image, ...$gallery->pluck('image')->all()])->filter() as $index => $image)
+                            <div class="border {{ $index === 0 ? 'border-brand' : 'border-line' }} border bg-mist w-[72px] h-[72px] p-2 hover:border-brand transition-colors duration-200 cursor-pointer"
+                                 data-gallery-thumb="{{ Storage::url($image) }}">
+                                <img src="{{ Storage::url($image) }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
+                            </div>
+                        @endforeach
+                    @else
+                        <button type="button" class="qty-btn" aria-label="Previous image">
+                            <svg width="9" height="14" viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5L2 7L7.5 12.5"/></svg>
+                        </button>
+                        @foreach (collect([1, 2, 3]) as $thumb)
+                            <div class="{{ $thumb === 1 ? 'border-brand' : 'border-line' }} border bg-mist w-[72px] h-[72px] p-2 hover:border-brand transition-colors duration-200 cursor-pointer">
+                                <x-phone-art :product="$product" />
+                            </div>
+                        @endforeach
+                        <button type="button" class="qty-btn" aria-label="Next image">
+                            <svg width="9" height="14" viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 1.5L7 7L1.5 12.5"/></svg>
+                        </button>
+                    @endif
                 </div>
             </div>
 
@@ -237,6 +259,23 @@
             tab.classList.remove('border-transparent', 'text-muted');
             document.querySelectorAll('.tab-panel').forEach((p) => p.classList.add('hidden'));
             document.querySelector(`[data-panel="${tab.dataset.tab}"]`).classList.remove('hidden');
+        });
+    });
+
+    document.querySelectorAll('[data-gallery-thumb]').forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+            const url = thumb.dataset.galleryThumb;
+
+            document.querySelectorAll('[data-gallery-thumb]').forEach((t) => {
+                t.classList.remove('border-brand');
+                t.classList.add('border-line');
+            });
+            thumb.classList.add('border-brand');
+            thumb.classList.remove('border-line');
+
+            document.querySelectorAll('[data-gallery-img]').forEach((img) => {
+                img.classList.toggle('hidden', img.src !== url);
+            });
         });
     });
 </script>
