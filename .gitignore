@@ -26,3 +26,15 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /database/*.sqlite*
+
+# --- Secrets and local environment files must never be committed ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+secrets.json
+auth.json
+.trae/mcp.json
